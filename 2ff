@@ -12,10 +12,10 @@ trap 'rm "$TMP"' EXIT
 cat > "$TMP"
 
 # determine the mime-type
-if [ "$(dd if="$TMP" bs=1 count=8 2>/dev/null | tr -d '\0')" = "farbfeld" ]; then
+if [ "$(LC_ALL=C dd if="$TMP" bs=1 count=8 2>/dev/null | LC_ALL=C tr -d '\0')" = "farbfeld" ]; then
 	cat "$TMP"
 else
-	MIME=$(file -ib "$TMP" | cut -d ";" -f 1)
+	MIME=$(file -Ib "$TMP" | cut -d ";" -f 1)
 
 	case "$MIME" in
 	image/png)
@@ -25,7 +25,8 @@ else
 		jpg2ff < "$TMP"
 		;;
 	*)
-		convert "$TMP" png:- | png2ff
+		# convert "$TMP" png:- | png2ff
+		echo "Mime type ${MIME} not recognised"
 		;;
 	esac
 fi
